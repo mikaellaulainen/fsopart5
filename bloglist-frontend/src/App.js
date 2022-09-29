@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Login from './components/Login'
+import LoggedIn from './components/Logged'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -17,6 +18,15 @@ const App = () => {
     )  
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
   const handleLogin=async (event) => {
     event.preventDefault()
     console.log("Loggin in", username, password)
@@ -26,13 +36,14 @@ const App = () => {
         username, password,
       })
       setUser(user)
+      blogService.setToken(user.token)
+      window.localStorage.setItem('loggedUser', JSON.stringify(user))
       setUsername('')
       setPassword('')
     } catch (exception) {
       setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      console.log(errorMessage)
+      setErrorMessage('')
     }
   }
 
@@ -42,6 +53,11 @@ const App = () => {
   const handlePassword = (event) => {
     setPassword(event.target.value)
   }
+
+  const logOut = () => {
+    window.localStorage.removeItem('loggedUser')
+    setUser(null)
+  }
   return (
     <div>
     {user === null ?  
@@ -49,6 +65,7 @@ const App = () => {
       :
       <>
       <h2>Blogs</h2>
+      <LoggedIn username={user.name} logOut={logOut}/>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}

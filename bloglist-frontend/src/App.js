@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Login from './components/Login'
 import LoggedIn from './components/Logged'
+import Creator from './components/Creator'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +13,9 @@ const App = () => {
   const [password,setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage,setErrorMessage]= useState('')
+  const [title,setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -53,10 +58,37 @@ const App = () => {
   const handlePassword = (event) => {
     setPassword(event.target.value)
   }
+  const handleTitle = (event) => {
+    setTitle(event.target.value)
+  }
+  const handleAuthor = (event) => {
+    setAuthor(event.target.value)
+  }
+
+  const handleUrl = (event) => {
+    setUrl(event.target.value)
+  }
+
 
   const logOut = () => {
     window.localStorage.removeItem('loggedUser')
     setUser(null)
+  }
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    console.log(title,url,author)
+    const blogObject= {
+      title: title,
+      author:author,
+      url:url
+    }
+    blogService.create(blogObject).then(returnedBlog => {
+    setBlogs(blogs.concat(returnedBlog))
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+    })
   }
   return (
     <div>
@@ -66,6 +98,7 @@ const App = () => {
       <>
       <h2>Blogs</h2>
       <LoggedIn username={user.name} logOut={logOut}/>
+      <Creator addBlog={addBlog} title={title} author={author} url={url} handleAuthor={handleAuthor} handleTitle={handleTitle} handleUrl={handleUrl}/>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}

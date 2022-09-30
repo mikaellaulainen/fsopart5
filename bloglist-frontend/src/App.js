@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import Login from './components/Login'
 import LoggedIn from './components/Logged'
 import Creator from './components/Creator'
+import Notification from './components/Notification'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -12,10 +13,11 @@ const App = () => {
   const [username, setUsername]= useState('')
   const [password,setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage,setErrorMessage]= useState('')
+  const [errorMessage,setErrorMessage]= useState(null)
   const [title,setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [status,setStatus]=useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -34,7 +36,6 @@ const App = () => {
 
   const handleLogin=async (event) => {
     event.preventDefault()
-    console.log("Loggin in", username, password)
 
     try {
       const user = await loginService.login({
@@ -46,9 +47,13 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
-      console.log(errorMessage)
-      setErrorMessage('')
+      console.log("faield")
+      setErrorMessage('Wrong username or password')
+      setStatus("error")
+      setTimeout(() => {
+        setErrorMessage(null)
+        setStatus(null)
+      }, 3000)
     }
   }
 
@@ -84,6 +89,12 @@ const App = () => {
       url:url
     }
     blogService.create(blogObject).then(returnedBlog => {
+    setErrorMessage(`Added new blog, ${returnedBlog.title} by ${returnedBlog.author}`)
+    setStatus("success")
+    setTimeout(() => {
+      setErrorMessage(null)
+      setStatus(null)
+    }, 3000)
     setBlogs(blogs.concat(returnedBlog))
     setTitle('')
     setAuthor('')
@@ -92,6 +103,7 @@ const App = () => {
   }
   return (
     <div>
+      <Notification message={errorMessage} status={status}/>
     {user === null ?  
       <Login username={username} password={password} handleLogin={handleLogin} handlePassword={handlePassword} handleUsername={handleUsername}/> 
       :

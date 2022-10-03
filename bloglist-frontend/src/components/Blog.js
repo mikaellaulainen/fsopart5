@@ -1,18 +1,34 @@
 import { useState } from "react"
+import blogService from '../services/blogs'
 
 const Blog = ({blog}) => {
   const [view,setView] = useState(false)
+  const [likes,setLikes] = useState(blog.likes)
 
   const handleClick= (event) => {
     event.preventDefault()
     setView(view ? false : true)
   }
 
+  const updateLikes = () => {
+    console.log("Trying to update")
+    const updatedBlog={...blog, likes: likes+1}
+    console.log(updatedBlog)
+    blogService
+      .update(blog.id,updatedBlog)
+      .then(returnedblog => {
+        setLikes(returnedblog.likes)
+      })
+    .catch(error =>{
+      console.log(error)
+    })
+  }
+
   if(view){
     return (
     <div className="show">
       <p>{blog.title}, {blog.author} <button onClick={handleClick}>Hide</button></p>
-       <p>Likes: {blog.likes} <button>Like</button></p> 
+       <p>Likes: {likes} <button onClick={updateLikes}>Like</button></p> 
        <p>Added by user: {blog.user.username}</p>
     </div>
     )

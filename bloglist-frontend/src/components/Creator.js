@@ -20,7 +20,8 @@ const Creator = ({createBlog}) => {
     createBlog({
         title: title,
         author:author,
-        url:url
+        url:url,
+        likes:0
     })
     setAuthor('')
     setTitle('')

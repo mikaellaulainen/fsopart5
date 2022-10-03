@@ -17,7 +17,6 @@ const App = () => {
   const [errorMessage,setErrorMessage]= useState(null)
 
   const [status,setStatus]=useState(null)
-
   const blogFormRef = useRef()
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -47,7 +46,6 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log("faield")
       setErrorMessage('Wrong username or password')
       setStatus("error")
       setTimeout(() => {
@@ -92,7 +90,7 @@ const App = () => {
       <Togglable buttonLabel='Add blog' ref={ blogFormRef}>
         <Creator createBlog={addBlog}/>
       </Togglable>
-      {blogs.map(blog =>
+      {blogs.sort((a,b)=> b.likes - a.likes).map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
       </>

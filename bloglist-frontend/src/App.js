@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Login from './components/Login'
 import LoggedIn from './components/Logged'
 import Creator from './components/Creator'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -14,11 +15,10 @@ const App = () => {
   const [password,setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage,setErrorMessage]= useState(null)
-  const [title,setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+
   const [status,setStatus]=useState(null)
 
+  const blogFormRef = useRef()
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -63,31 +63,13 @@ const App = () => {
   const handlePassword = (event) => {
     setPassword(event.target.value)
   }
-  const handleTitle = (event) => {
-    setTitle(event.target.value)
-  }
-  const handleAuthor = (event) => {
-    setAuthor(event.target.value)
-  }
-
-  const handleUrl = (event) => {
-    setUrl(event.target.value)
-  }
-
-
   const logOut = () => {
     window.localStorage.removeItem('loggedUser')
     setUser(null)
   }
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    console.log(title,url,author)
-    const blogObject= {
-      title: title,
-      author:author,
-      url:url
-    }
+  const addBlog = (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     blogService.create(blogObject).then(returnedBlog => {
     setErrorMessage(`Added new blog, ${returnedBlog.title} by ${returnedBlog.author}`)
     setStatus("success")
@@ -96,9 +78,6 @@ const App = () => {
       setStatus(null)
     }, 3000)
     setBlogs(blogs.concat(returnedBlog))
-    setTitle('')
-    setAuthor('')
-    setUrl('')
     })
   }
   return (
@@ -110,7 +89,9 @@ const App = () => {
       <>
       <h2>Blogs</h2>
       <LoggedIn username={user.name} logOut={logOut}/>
-      <Creator addBlog={addBlog} title={title} author={author} url={url} handleAuthor={handleAuthor} handleTitle={handleTitle} handleUrl={handleUrl}/>
+      <Togglable buttonLabel='Add blog' ref={ blogFormRef}>
+        <Creator createBlog={addBlog}/>
+      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}

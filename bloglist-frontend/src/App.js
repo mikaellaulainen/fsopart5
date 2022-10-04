@@ -21,7 +21,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const App = () => {
       setPassword('')
     } catch (exception) {
       setErrorMessage('Wrong username or password')
-      setStatus("error")
+      setStatus('error')
       setTimeout(() => {
         setErrorMessage(null)
         setStatus(null)
@@ -69,32 +69,32 @@ const App = () => {
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
     blogService.create(blogObject).then(returnedBlog => {
-    setErrorMessage(`Added new blog, ${returnedBlog.title} by ${returnedBlog.author}`)
-    setStatus("success")
-    setTimeout(() => {
-      setErrorMessage(null)
-      setStatus(null)
-    }, 3000)
-    setBlogs(blogs.concat(returnedBlog))
+      setErrorMessage(`Added new blog, ${returnedBlog.title} by ${returnedBlog.author}`)
+      setStatus('success')
+      setTimeout(() => {
+        setErrorMessage(null)
+        setStatus(null)
+      }, 3000)
+      setBlogs(blogs.concat(returnedBlog))
     })
   }
   return (
     <div>
       <Notification message={errorMessage} status={status}/>
-    {user === null ?  
-      <Login username={username} password={password} handleLogin={handleLogin} handlePassword={handlePassword} handleUsername={handleUsername}/> 
-      :
-      <>
-      <h2>Blogs</h2>
-      <LoggedIn username={user.name} logOut={logOut}/>
-      <Togglable buttonLabel='Add blog' ref={ blogFormRef}>
-        <Creator createBlog={addBlog}/>
-      </Togglable>
-      {blogs.sort((a,b)=> b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} user={user} />
-      )}
-      </>
-    }
+      {user === null ?
+        <Login username={username} password={password} handleLogin={handleLogin} handlePassword={handlePassword} handleUsername={handleUsername}/>
+        :
+        <>
+          <h2>Blogs</h2>
+          <LoggedIn username={user.name} logOut={logOut}/>
+          <Togglable buttonLabel='Add blog' ref={ blogFormRef}>
+            <Creator createBlog={addBlog}/>
+          </Togglable>
+          {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
+            <Blog key={blog.id} blog={blog} user={user} />
+          )}
+        </>
+      }
     </div>
   )
 }

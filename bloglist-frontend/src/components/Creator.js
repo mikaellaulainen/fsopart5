@@ -1,10 +1,10 @@
-import { useState } from "react"
+import { useState } from 'react'
 
-const Creator = ({createBlog}) => {
+const Creator = ({ createBlog }) => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [title,setTitle] = useState('')
-  
+
   const handleTitle = (event) => {
     setTitle(event.target.value)
   }
@@ -18,22 +18,22 @@ const Creator = ({createBlog}) => {
   const addBlog = (event) => {
     event.preventDefault()
     createBlog({
-        title: title,
-        author:author,
-        url:url,
-        likes:0
+      title: title,
+      author:author,
+      url:url,
+      likes:0
     })
     setAuthor('')
     setTitle('')
     setUrl('')
   }
-  
+
   return (
     <>
       <h4>Create new blog</h4>
       <form onSubmit={addBlog}>
         <p>Title:<input type="text" value={title} onChange={handleTitle}/></p>
-        <p>Author:<input type="text" value={author} onChange={handleAuthor}/></p> 
+        <p>Author:<input type="text" value={author} onChange={handleAuthor}/></p>
         <p>Url:<input type="text" value={url} onChange={handleUrl}/></p>
         <button>Add</button>
       </form>

@@ -1,7 +1,7 @@
-const LoggedIn= ({username, logOut}) => {
+const LoggedIn= ({ username, logOut }) => {
   return (
     <>
-    <p>Logged in as {username}! <button onClick={logOut}>Log out</button></p>
+      <p>Logged in as {username}! <button onClick={logOut}>Log out</button></p>
 
     </>
   )

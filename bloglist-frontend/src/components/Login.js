@@ -1,4 +1,4 @@
-const Login= ({username, password, handleLogin,handlePassword, handleUsername}) => {
+const Login= ({ username, password, handleLogin,handlePassword, handleUsername }) => {
   return (
     <>
       <h2>Login</h2>
